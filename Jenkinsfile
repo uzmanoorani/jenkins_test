@@ -1,20 +1,30 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven'
+        jdk 'JDK 17'
+    }
+
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/uzmanoorani/jenkins_test.git'
+            }
+        }
         stage('Build') {
             steps {
-                echo 'Building...'
+                sh 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing...'
+                sh 'mvn test'
             }
         }
-        stage('Deploy') {
+        stage('Package') {
             steps {
-                echo 'Deploying...'
+                sh 'mvn package'
             }
         }
     }
