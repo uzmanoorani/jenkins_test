@@ -1,23 +1,16 @@
 pipeline {
     agent any
 
-    // tools {
-    //     maven 'Maven'
-    //     jdk 'JDK 17'
-    // }
+    tools {
+        maven 'Maven'
+        jdk 'JDK 17'
+    }
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/uzmanoorani/jenkins_test.git'
             }
         }
-        stage('Setup') {
-            steps {
-                sh '''
-                apt-get update
-                apt-get install -y openjdk-17-jdk maven
-                '''
-            }
         }
         stage('Build') {
             steps {
