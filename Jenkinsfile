@@ -25,6 +25,13 @@ pipeline {
                 sh 'mvn package'
             }
         }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build(DOCKER_IMAGE, '.')
+                }
+            }
+        }
     }
 }
 
