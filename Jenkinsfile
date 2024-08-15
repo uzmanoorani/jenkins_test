@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     //docker.build(DOCKER_IMAGE, '.')
-                    def customImage = docker.build("${env.DOCKER_IMAGE}", ".")
+                    sh "docker build -t ${env.DOCKER_IMAGE} ."
                 }
             }
         }
