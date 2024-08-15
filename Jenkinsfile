@@ -11,13 +11,15 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/uzmanoorani/jenkins_test.git'
             }
         }
-        stage('Build') {
-            agent {
-                docker {
-                    image 'maven:3.8.6-openjdk-17'
-                    args '-v /root/.m2:/root/.m2' // Optional: To use the local Maven repository
-                }
+        stage('Setup') {
+            steps {
+                sh '''
+                sudo apt-get update
+                sudo apt-get install -y openjdk-17-jdk maven
+                '''
             }
+        }
+        stage('Build') {
             steps {
                 sh 'mvn clean install'
             }
