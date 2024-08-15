@@ -26,7 +26,7 @@ pipeline {
             }
             post {
                 success {
-                    arcdef customImage = docker.build("${env.DOCKER_IMAGE}", ".")hiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
+                    archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
                 }
             }
         }
