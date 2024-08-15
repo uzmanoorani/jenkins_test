@@ -9,8 +9,7 @@ pipeline {
             steps {
                 git branch: 'main', url: 'https://github.com/uzmanoorani/jenkins_test.git'
             }
-        }
-        }
+            }
         stage('Build') {
             steps {
                 sh 'mvn clean install'
@@ -26,5 +25,6 @@ pipeline {
                 sh 'mvn package'
             }
         }
+    }
 }
 
