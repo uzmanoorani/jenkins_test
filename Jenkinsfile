@@ -4,6 +4,9 @@ pipeline {
         maven 'Maven'
         jdk 'JDK 17'
     }
+    environment {
+        DOCKER_IMAGE = 'backend:latest'
+    }
     stages {
         stage('Checkout') {
             steps {
