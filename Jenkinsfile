@@ -1,11 +1,16 @@
 pipeline {
-    agent any
+    // agent any
 
-    tools {
-        maven 'Maven'
-        jdk 'JDK 17'
+    // tools {
+    //     maven 'Maven'
+    //     jdk 'JDK 17'
+    // }
+    agent {
+        docker {
+            image 'maven:3.8.6-openjdk-17'
+            args '-v /root/.m2:/root/.m2' // Optional: To use the local Maven repository
+        }
     }
-
     stages {
         stage('Checkout') {
             steps {
