@@ -24,11 +24,17 @@ pipeline {
             steps {
                 sh 'mvn package'
             }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
+                }
+            }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build(DOCKER_IMAGE, '.')
+                    //docker.build(DOCKER_IMAGE, '.')
+                    def customImage = docker.build("${env.DOCKER_IMAGE}", ".")
                 }
             }
         }
