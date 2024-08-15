@@ -23,20 +23,21 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Package') {
-            steps {
-                sh 'mvn package'
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
-                }
-            }
-        }
+        // stage('Package') {
+        //     steps {
+        //         sh 'mvn package'
+        //     }
+        //     post {
+        //         success {
+        //             archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
+        //         }
+        //     }
+        // }
         stage('Build Docker Image') {
             steps {
                 script {
                     //docker.build(DOCKER_IMAGE, '.')
+                    sh 'cp target/myapp.jar .'
                     sh "docker build -t ${env.DOCKER_IMAGE} ."
                 }
             }
