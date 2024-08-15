@@ -2,7 +2,7 @@ FROM openjdk:11-jre-slim
 
 WORKDIR /app
 
-COPY myapp.jar /app/myapp.jar
+COPY crud-tuto-1.0.jar /app/crud-tuto.jar
 
 EXPOSE 8080
 

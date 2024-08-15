@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     //docker.build(DOCKER_IMAGE, '.')
-                    sh 'cp target/myapp.jar .'
+                    sh 'cp target/crud-tuto-1.0.jar .'
                     sh "docker build -t ${env.DOCKER_IMAGE} ."
                 }
             }
