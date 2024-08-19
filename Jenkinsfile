@@ -43,11 +43,19 @@ pipeline {
                 }
             }
         }
-        stage('Scan Docker Image') {
+        stage('Download Trivy and Scan Image') {
             steps {
                 script {
-                    
-                    sh "docker scan ${env.DOCKER_IMAGE}"
+                    // Download and install Trivy
+                    sh '''
+                        echo "Installing Trivy..."
+                        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.39.0_Linux-64bit.deb
+                        sudo dpkg -i trivy_0.39.0_Linux-64bit.deb
+                        rm trivy_0.39.0_Linux-64bit.deb  # Clean up the installer
+                    '''
+
+                    // Scan the Docker image
+                    sh "trivy image ${env.DOCKER_IMAGE}"
                 }
             }
         }
