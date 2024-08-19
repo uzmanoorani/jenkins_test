@@ -43,13 +43,41 @@ pipeline {
                 }
             }
         }
-        stage('Download Trivy and Scan Image') {
+        stage('Install Trivy') {
             steps {
                 script {
-                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${env.DOCKER_IMAGE}"
+                    // Install Trivy
+                    sh '''
+                        # Install dependencies for Trivy
+                        apk add --no-cache curl bash
+
+                        # Download and install Trivy
+                        TRIVY_VERSION=0.39.0
+                        wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_0.39.0_Linux-64bit.tar.gz
+                        tar zxvf trivy_0.39.0_Linux-64bit.tar.gz
+                        mv trivy /usr/local/bin/
+                        rm trivy_0.39.0_Linux-64bit.tar.gz
+                    '''
                 }
             }
         }
+
+        stage('Scan Existing Docker Image') {
+            steps {
+                script {
+                    // Scan the existing Docker image with Trivy
+                    def dockerImage = "${env.DOCKER_IMAGE_NAME}"
+                    sh "trivy image --exit-code 1 ${dockerImage}"
+                }
+            }
+        }
+        // stage('Download Trivy and Scan Image') {
+        //     steps {
+        //         script {
+        //             sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${env.DOCKER_IMAGE}"
+        //         }
+        //     }
+        // }
     }
    
 }
