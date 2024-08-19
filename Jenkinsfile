@@ -55,7 +55,7 @@ pipeline {
                         TRIVY_VERSION=0.39.0
                         curl -LO https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_0.39.0_Linux-64bit.tar.gz
                         tar zxvf trivy_0.39.0_Linux-64bit.tar.gz
-                        sudo mv trivy /usr/local/bin/
+                        mv trivy /usr/local/bin/
                         rm trivy_0.39.0_Linux-64bit.tar.gz
                     '''
                 }
