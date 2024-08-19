@@ -6,6 +6,7 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE = 'backend:latest'
+        SONARQUBE_SCANNER = tool name: 'SonarQubeScanner'
     }
     stages {
         stage('Checkout') {
@@ -23,17 +24,17 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        // stage('Lint') {
-        //     steps {
-        //         sh 'mvn checkstyle:checkstyle'
-        //     }
-        // }
-        
-        // stage('Security Scan') {
-        //     steps {
-        //         sh 'mvn org.owasp:dependency-check-maven:check'
-        //     }
-        // }
+         stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') { 
+                    sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
+                        -Dsonar.projectKey=crud-tuto-back \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
