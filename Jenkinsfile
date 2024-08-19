@@ -66,7 +66,7 @@ pipeline {
             steps {
                 script {
                     // Scan the existing Docker image with Trivy
-                    def dockerImage = "${env.DOCKER_IMAGE_NAME}"
+                    def dockerImage = "${env.DOCKER_IMAGE}"
                     sh "trivy image --exit-code 1 ${dockerImage}"
                 }
             }
