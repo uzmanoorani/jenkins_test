@@ -24,17 +24,17 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('SonarQubeServer') { 
-        //             sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
-        //                 -Dsonar.projectKey=crud-tuto-back \
-        //                 -Dsonar.sources=. \
-        //                 -Dsonar.host.url=http://localhost:9000 \
-        //                 -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
-        //         }
-        //     }
-        // }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') { 
+                    sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
+                        -Dsonar.projectKey=crud-tuto-back \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
