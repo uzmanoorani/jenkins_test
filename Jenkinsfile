@@ -49,7 +49,8 @@ pipeline {
                     // Install Trivy
                     sh '''
                         # Install dependencies for Trivy
-                         apt-get update && apt-get install -y curl wget
+                         apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 
                         # Download and install Trivy
                         TRIVY_VERSION=0.39.0
