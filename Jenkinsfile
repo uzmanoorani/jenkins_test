@@ -30,7 +30,7 @@ pipeline {
                     sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
                         -Dsonar.projectKey=crud-tuto-back \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://sonarqube:9000 \
+                        -Dsonar.host.url=http://172.17.0.3:9000 \
                         -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
                 }
             }
