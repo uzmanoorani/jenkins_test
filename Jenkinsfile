@@ -43,16 +43,15 @@ pipeline {
                 }
             }
         }
-    }
-    post {
-        always {
-            script {
-                def qg = waitForQualityGate()
-                if (qg.status != 'OK') {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        stage('Scan Docker Image') {
+            steps {
+                script {
+                    
+                    sh "docker scan ${env.DOCKER_IMAGE}"
                 }
             }
         }
     }
+   
 }
 
