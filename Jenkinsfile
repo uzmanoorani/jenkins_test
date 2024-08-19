@@ -23,20 +23,20 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        // stage('Package') {
-        //     steps {
-        //         sh 'mvn package'
-        //     }
-        //     post {
-        //         success {
-        //             archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
-        //         }
-        //     }
-        // }
+        stage('Lint') {
+            steps {
+                sh 'mvn checkstyle:checkstyle'
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                sh 'mvn org.owasp:dependency-check-maven:check'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
-                    //docker.build(DOCKER_IMAGE, '.')
                     sh 'cp target/crud-tuto-1.0.jar .'
                     sh "docker build -t ${env.DOCKER_IMAGE} ."
                 }
