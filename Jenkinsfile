@@ -49,7 +49,7 @@ pipeline {
                     // Install Trivy
                     sh '''
                         # Install dependencies for Trivy
-                        apk add --no-cache curl bash
+                         apt-get update && apt-get install -y curl wget
 
                         # Download and install Trivy
                         TRIVY_VERSION=0.39.0
