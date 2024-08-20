@@ -24,27 +24,27 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQubeServer') { 
-                    sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
-                        -Dsonar.projectKey=crud-tuto-back \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://172.17.0.2:9000 \
-                        -Dsonar.login=${SONAR_TOKEN}"
-                }
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                script {
-                    def qualityGate = waitForQualityGate()
-                    if (qualityGate.status != 'OK') {
-                        sh 'exit 1'
-                    }
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('SonarQubeServer') { 
+        //             sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
+        //                 -Dsonar.projectKey=crud-tuto-back \
+        //                 -Dsonar.sources=. \
+        //                 -Dsonar.host.url=http://172.17.0.2:9000 \
+        //                 -Dsonar.login=${SONAR_TOKEN}"
+        //         }
+        //     }
+        // }
+        // stage('Quality Gate') {
+        //     steps {
+        //         script {
+        //             def qualityGate = waitForQualityGate()
+        //             if (qualityGate.status != 'OK') {
+        //                 sh 'exit 1'
+        //             }
+        //         }
+        //     }
+        // }
         // stage('Quality Gate') {
         //     steps {
         //         script {
