@@ -35,6 +35,16 @@ pipeline {
                 }
             }
         }
+        stage('Quality Gate') {
+            steps {
+                script {
+                    def qualityGate = waitForQualityGate()
+                    if (qualityGate.status != 'OK') {
+                        sh 'exit 1'
+                    }
+                }
+            }
+        }
         // stage('Quality Gate') {
         //     steps {
         //         script {
