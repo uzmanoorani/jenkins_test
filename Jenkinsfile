@@ -56,11 +56,13 @@ pipeline {
         //         }
         //     }
         // }
+        
         stage('Build Docker Image') {
             steps {
                 script {
-                    dir('target') { // Change to the target directory
-                    sh "docker build -t ${env.DOCKER_IMAGE} ."
+                    sh "docker build -t ${env.DOCKER_IMAGE} -f Dockerfile --build-arg JAR_FILE=target/crud-tuto-1.0.jar ."
+                    // dir('target') { // Change to the target directory
+                    // sh "docker build -t ${env.DOCKER_IMAGE} ."
                     // sh 'cp target/crud-tuto-1.0.jar .'
                     // sh "docker build -t ${env.DOCKER_IMAGE} ."
                 }
