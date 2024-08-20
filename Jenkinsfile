@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     def dockerImage = "${env.DOCKER_IMAGE}"
-                    sh "trivy image --timeout 20m --exit-code 1 ${dockerImage}"
+                    sh "trivy image --timeout 40m --exit-code 1 ${dockerImage}"
                 }
             }
         }
