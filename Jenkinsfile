@@ -31,7 +31,7 @@ pipeline {
                         -Dsonar.projectKey=crud-tuto-back \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=http://172.17.0.2:9000 \
-                        -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
+                        -Dsonar.login=${SONAR_TOKEN}"
                 }
             }
         }
