@@ -43,41 +43,28 @@ pipeline {
                 }
             }
         }
-        stage('Install Trivy') {
+        // stage('Install Trivy') {
+        //     steps {
+        //         script {
+        //             sh '''
+        //                 TRIVY_VERSION=0.39.0
+        //                 curl -LO https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_0.39.0_Linux-64bit.tar.gz
+        //                 tar zxvf trivy_0.39.0_Linux-64bit.tar.gz
+        //                 mv trivy /usr/local/bin/
+        //                 rm trivy_0.39.0_Linux-64bit.tar.gz
+        //             '''
+        //         }
+        //     }
+        // }
+
+        stage('Scanning Docker Image') {
             steps {
                 script {
-                    // Install Trivy
-                    sh '''
-                        # Install dependencies for Trivy
-                        # apt-get update && apt-get install -y curl wget
-
-                        # Download and install Trivy
-                        TRIVY_VERSION=0.39.0
-                        curl -LO https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_0.39.0_Linux-64bit.tar.gz
-                        tar zxvf trivy_0.39.0_Linux-64bit.tar.gz
-                        su mv trivy /usr/local/bin/
-                        rm trivy_0.39.0_Linux-64bit.tar.gz
-                    '''
-                }
-            }
-        }
-
-        stage('Scan Existing Docker Image') {
-            steps {
-                script {
-                    // Scan the existing Docker image with Trivy
                     def dockerImage = "${env.DOCKER_IMAGE}"
                     sh "trivy image --exit-code 1 ${dockerImage}"
                 }
             }
         }
-        // stage('Download Trivy and Scan Image') {
-        //     steps {
-        //         script {
-        //             sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${env.DOCKER_IMAGE}"
-        //         }
-        //     }
-        // }
     }
    
 }
