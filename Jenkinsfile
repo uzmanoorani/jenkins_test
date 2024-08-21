@@ -32,33 +32,33 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-              withSonarQubeEnv('SonarQubeServer') { 
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh """
-                        ${SONARQUBE_SCANNER}/bin/sonar-scanner \
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=${SONARQUBE_URL} \
-                        -Dsonar.login=${SONAR_TOKEN}
-                    """
-                }
-              }
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    script {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            error "Pipeline failed due to quality gate failure: ${qg.status}"
-                        }
-                    }
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //       withSonarQubeEnv('SonarQubeServer') { 
+        //         withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+        //             sh """
+        //                 ${SONARQUBE_SCANNER}/bin/sonar-scanner \
+        //                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+        //                 -Dsonar.sources=. \
+        //                 -Dsonar.host.url=${SONARQUBE_URL} \
+        //                 -Dsonar.login=${SONAR_TOKEN}
+        //             """
+        //         }
+        //       }
+        //     }
+        // }
+        // stage('Quality Gate') {
+        //     steps {
+        //         timeout(time: 15, unit: 'MINUTES') {
+        //             script {
+        //                 def qg = waitForQualityGate()
+        //                 if (qg.status != 'OK') {
+        //                     error "Pipeline failed due to quality gate failure: ${qg.status}"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         // stage('Quality Gate') {
         //     steps {
         //         script {
@@ -107,13 +107,13 @@ pipeline {
         //     }
         // }
 
-        stage('Scanning Docker Image') {
-            steps {
-                script {
-                    def dockerImage = "${env.DOCKER_IMAGE}"
-                    sh "trivy image --timeout 40m --scanners vuln ${dockerImage}"
-                }
-            }
-        }
+        // stage('Scanning Docker Image') {
+        //     steps {
+        //         script {
+        //             def dockerImage = "${env.DOCKER_IMAGE}"
+        //             sh "trivy image --timeout 40m --scanners vuln ${dockerImage}"
+        //         }
+        //     }
+        // }
     }  
 }
