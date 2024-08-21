@@ -70,6 +70,13 @@ pipeline {
                 }
             }
         }
+        stage('Push Docker Image to ACR') {
+            steps {
+                script {
+                    sh "docker push ${env.DOCKER_IMAGE}"
+                }
+            }
+        }
 
         // stage('Scanning Docker Image') {
         //     steps {
