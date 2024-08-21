@@ -47,6 +47,16 @@ pipeline {
               }
             }
         }
+        stage('Quality Gate') {
+            steps {
+                script {
+                    def qualityGate = waitForQualityGate()
+                    if (qualityGate.status != 'OK') {
+                        sh 'exit 1'
+                    }
+                }
+            }
+        }
         // stage('SonarQube Analysis') {
         //     steps {
         //         withSonarQubeEnv('SonarQubeServer') { 
@@ -58,16 +68,7 @@ pipeline {
         //         }
         //     }
         // }
-        // stage('Quality Gate') {
-        //     steps {
-        //         script {
-        //             def qualityGate = waitForQualityGate()
-        //             if (qualityGate.status != 'OK') {
-        //                 sh 'exit 1'
-        //             }
-        //         }
-        //     }
-        // }
+       
         
         stage('Build Docker Image') {
             steps {
