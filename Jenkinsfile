@@ -44,30 +44,23 @@ pipeline {
                         -Dsonar.login=${SONAR_TOKEN}
                     """
                 }
-                
-                timeout(time: 5, unit: 'MINUTES') {
-                        script {
-                            def qg = waitForQualityGate()
-                            if (qg.status != 'OK') {
-                                error "Pipeline failed due to quality gate failure: ${qg.status}"
-                            }
-                        }
-                    }
-              }
             }
         }
-        // stage('Quality Gate') {
-        //     steps {
-        //         timeout(time: 15, unit: 'MINUTES') {
-        //             script {
-        //                 def qg = waitForQualityGate()
-        //                 if (qg.status != 'OK') {
-        //                     error "Pipeline failed due to quality gate failure: ${qg.status}"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+     }
+        stage('Quality Gate') {
+            steps {
+              withSonarQubeEnv('SonarQubeServer') {
+                timeout(time: 15, unit: 'MINUTES') {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline failed due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+            }
+        }
         // stage('Quality Gate') {
         //     steps {
         //         script {
