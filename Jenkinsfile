@@ -49,14 +49,26 @@ pipeline {
         }
         stage('Quality Gate') {
             steps {
-                script {
-                    def qualityGate = waitForQualityGate()
-                    if (qualityGate.status != 'OK') {
-                        sh 'exit 1'
+                timeout(time: 15, unit: 'MINUTES') {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline failed due to quality gate failure: ${qg.status}"
+                        }
                     }
                 }
             }
         }
+        // stage('Quality Gate') {
+        //     steps {
+        //         script {
+        //             def qualityGate = waitForQualityGate()
+        //             if (qualityGate.status != 'OK') {
+        //                 sh 'exit 1'
+        //             }
+        //         }
+        //     }
+        // }
         // stage('SonarQube Analysis') {
         //     steps {
         //         withSonarQubeEnv('SonarQubeServer') { 
