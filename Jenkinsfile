@@ -8,6 +8,8 @@ pipeline {
         IMAGE_NAME = 'backend'
         ACR_NAME = 'murthyfinzlyosacr'
         SONARQUBE_SCANNER = tool name: 'SonarQubeScanner'
+        SONARQUBE_URL = "http://172.17.0.3:9000"
+        SONAR_PROJECT_KEY = "crud-tuto-back"
         IMAGE_TAG = 'latest'
         ACR_URL = "${ACR_NAME}.azurecr.io"
         CREDENTIALS_ID = 'acr-credentials'
@@ -28,6 +30,19 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn test'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh """
+                        sonar-scanner \
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=${SONARQUBE_URL} \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    """
+                }
             }
         }
         // stage('SonarQube Analysis') {
@@ -55,7 +70,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    //sh "docker build -t ${env.DOCKER_IMAGE} -f Dockerfile --build-arg JAR_FILE=target/crud-tuto-1.0.jar ."
                     sh "docker build -t ${env.DOCKER_IMAGE} -f Dockerfile --build-arg JAR_FILE=target/${JAR_FILE} ."
                     
                 }
