@@ -6,15 +6,16 @@ pipeline {
     }
     environment {
         IMAGE_NAME = 'backend'
+        
         ACR_NAME = 'murthyfinzlyosacr'
         SONARQUBE_SCANNER = tool name: 'SonarQubeScanner'
         SONARQUBE_URL = "http://172.17.0.3:9000"
         SONAR_PROJECT_KEY = "crud-tuto-back"
         IMAGE_TAG = 'latest'
-        ACR_URL = "${ACR_NAME}.azurecr.io"
+        ACR_URL="${ACR_NAME}.azurecr.io"
         CREDENTIALS_ID = 'acr-credentials'
         JAR_FILE = 'crud-tuto-1.0.jar'
-        DOCKER_IMAGE = "${ACR_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+        DOCKER_IMAGE="${ACR_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
     stages {
         stage('Checkout') {
@@ -50,7 +51,8 @@ pipeline {
         stage('Quality Gate') {
             steps {
               withSonarQubeEnv('SonarQubeServer') {
-                timeout(time: 15, unit: 'MINUTES') {
+                sleep time: 30000, unit: 'MILLISECONDS'
+                timeout(time: 30, unit: 'MINUTES') {
                     script {
                         def qg = waitForQualityGate()
                         if (qg.status != 'OK') {
