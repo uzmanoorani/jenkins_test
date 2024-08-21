@@ -77,30 +77,30 @@ pipeline {
                 }
             }
         }
-        stage('Login to ACR') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: CREDENTIALS_ID, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                        sh "echo ${PASSWORD} | docker login ${ACR_URL} --username ${USERNAME} --password-stdin"
-                    }
-                }
-            }
-        }
-        stage('Push Docker Image to ACR') {
-            steps {
-                script {
-                    sh "docker push ${env.DOCKER_IMAGE}"
-                }
-            }
-        }
-
-        // stage('Scanning Docker Image') {
+        // stage('Login to ACR') {
         //     steps {
         //         script {
-        //             def dockerImage = "${env.DOCKER_IMAGE}"
-        //             sh "trivy image --timeout 40m --scanners vuln ${dockerImage}"
+        //             withCredentials([usernamePassword(credentialsId: CREDENTIALS_ID, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+        //                 sh "echo ${PASSWORD} | docker login ${ACR_URL} --username ${USERNAME} --password-stdin"
+        //             }
         //         }
         //     }
         // }
+        // stage('Push Docker Image to ACR') {
+        //     steps {
+        //         script {
+        //             sh "docker push ${env.DOCKER_IMAGE}"
+        //         }
+        //     }
+        // }
+
+        stage('Scanning Docker Image') {
+            steps {
+                script {
+                    def dockerImage = "${env.DOCKER_IMAGE}"
+                    sh "trivy image --timeout 40m --scanners vuln ${dockerImage}"
+                }
+            }
+        }
     }  
 }
