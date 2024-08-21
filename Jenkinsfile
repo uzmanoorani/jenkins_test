@@ -5,7 +5,7 @@ pipeline {
         jdk 'JDK 17'
     }
     environment {
-        DOCKER_IMAGE = 'backend'
+        IMAGE_NAME = 'backend'
         ACR_NAME = 'murthyfinzlyosacr'
         SONARQUBE_SCANNER = tool name: 'SonarQubeScanner'
         IMAGE_TAG = 'latest'
