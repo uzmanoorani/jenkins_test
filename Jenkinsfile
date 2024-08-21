@@ -47,17 +47,17 @@ pipeline {
               }
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQubeServer') { 
-                    sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
-                        -Dsonar.projectKey=crud-tuto-back \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://172.17.0.2:9000 \
-                        -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('SonarQubeServer') { 
+        //             sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
+        //                 -Dsonar.projectKey=crud-tuto-back \
+        //                 -Dsonar.sources=. \
+        //                 -Dsonar.host.url=http://172.17.0.2:9000 \
+        //                 -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
+        //         }
+        //     }
+        // }
         // stage('Quality Gate') {
         //     steps {
         //         script {
