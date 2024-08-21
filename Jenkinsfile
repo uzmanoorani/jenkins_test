@@ -10,7 +10,7 @@ pipeline {
         SONARQUBE_SCANNER = tool name: 'SonarQubeScanner'
         IMAGE_TAG = 'latest'
         ACR_URL = "${ACR_NAME}.azurecr.io"
-        CREDENTIALS_ID = 'acrc-credentials'
+        CREDENTIALS_ID = 'acr-credentials'
         JAR_FILE = 'crud-tuto-1.0.jar'
         DOCKER_IMAGE = "${ACR_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
@@ -58,6 +58,15 @@ pipeline {
                     //sh "docker build -t ${env.DOCKER_IMAGE} -f Dockerfile --build-arg JAR_FILE=target/crud-tuto-1.0.jar ."
                     sh "docker build -t ${env.DOCKER_IMAGE} -f Dockerfile --build-arg JAR_FILE=target/${JAR_FILE} ."
                     
+                }
+            }
+        }
+        stage('Login to ACR') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: CREDENTIALS_ID, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                        sh "echo ${PASSWORD} | docker login ${ACR_URL} --username ${USERNAME} --password-stdin"
+                    }
                 }
             }
         }
