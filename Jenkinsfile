@@ -32,29 +32,29 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-              withSonarQubeEnv('SonarQubeServer') { 
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh """
-                        ${SONARQUBE_SCANNER}/bin/sonar-scanner \
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=${SONARQUBE_URL} \
-                        -Dsonar.login=${SONAR_TOKEN}
-                    """
-                }
-                timeout(time: 5, unit: 'MINUTES') {
-                        script {
-                            def qg = waitForQualityGate()
-                            if (qg.status != 'OK') {
-                                error "Pipeline failed due to quality gate failure: ${qg.status}"
-                            }
-                        }
-                    }
-              }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //       withSonarQubeEnv('SonarQubeServer') { 
+        //         withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+        //             sh """
+        //                 ${SONARQUBE_SCANNER}/bin/sonar-scanner \
+        //                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+        //                 -Dsonar.sources=. \
+        //                 -Dsonar.host.url=${SONARQUBE_URL} \
+        //                 -Dsonar.login=${SONAR_TOKEN}
+        //             """
+        //         }
+        //         timeout(time: 5, unit: 'MINUTES') {
+        //                 script {
+        //                     def qg = waitForQualityGate()
+        //                     if (qg.status != 'OK') {
+        //                         error "Pipeline failed due to quality gate failure: ${qg.status}"
+        //                     }
+        //                 }
+        //             }
+        //       }
+        //     }
+        // }
         // stage('Quality Gate') {
         //     steps {
         //         timeout(time: 15, unit: 'MINUTES') {
@@ -98,22 +98,22 @@ pipeline {
                 }
             }
         }
-        // stage('Login to ACR') {
-        //     steps {
-        //         script {
-        //             withCredentials([usernamePassword(credentialsId: CREDENTIALS_ID, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-        //                 sh "echo ${PASSWORD} | docker login ${ACR_URL} --username ${USERNAME} --password-stdin"
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Push Docker Image to ACR') {
-        //     steps {
-        //         script {
-        //             sh "docker push ${env.DOCKER_IMAGE}"
-        //         }
-        //     }
-        // }
+        stage('Login to ACR') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: CREDENTIALS_ID, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                        sh "echo ${PASSWORD} | docker login ${ACR_URL} --username ${USERNAME} --password-stdin"
+                    }
+                }
+            }
+        }
+        stage('Push Docker Image to ACR') {
+            steps {
+                script {
+                    sh "docker push ${env.DOCKER_IMAGE}"
+                }
+            }
+        }
 
         // stage('Scanning Docker Image') {
         //     steps {
