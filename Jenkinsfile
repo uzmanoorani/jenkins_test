@@ -6,7 +6,6 @@ pipeline {
     }
     environment {
         IMAGE_NAME = 'backend'
-        
         ACR_NAME = 'murthyfinzlyosacr'
         SONARQUBE_SCANNER = tool name: 'SonarQubeScanner'
         SONARQUBE_URL = "http://172.17.0.3:9000"
@@ -55,9 +54,9 @@ pipeline {
                 timeout(time: 30, unit: 'MINUTES') {
                     script {
                         def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            sh 'exit 0'
-                           // error "Pipeline failed due to quality gate failure: ${qg.status}"
+                        if (qg.status != 'SUCCESS') {
+                           //sh 'exit 0'
+                           error "Pipeline failed due to quality gate failure: ${qg.status}"
                         }
                     }
                 }
