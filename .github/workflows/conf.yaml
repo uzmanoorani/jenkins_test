@@ -1,0 +1,13 @@
+name: Configuration test
+on:
+  repository_dispatch:
+    types:
+      - configuration-check
+  workflow_dispatch:
+jobs:
+  check:
+    name: Run check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say hello
+        run: echo Hello
