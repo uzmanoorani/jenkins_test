@@ -55,43 +55,19 @@ pipeline {
                     script {
                         def qg = waitForQualityGate()
                         if (qg.status != 'SUCCESS') {
-                           //sh 'exit 0'
                            error "Pipeline failed due to quality gate failure: ${qg.status}"
-                        }
-                    }
+                           }
+                           }
+                           }
                 }
             }
-            }
         }
-        // stage('Quality Gate') {
-        //     steps {
-        //         script {
-        //             def qualityGate = waitForQualityGate()
-        //             if (qualityGate.status != 'OK') {
-        //                 sh 'exit 1'
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('SonarQubeServer') { 
-        //             sh "${SONARQUBE_SCANNER}/bin/sonar-scanner \
-        //                 -Dsonar.projectKey=crud-tuto-back \
-        //                 -Dsonar.sources=. \
-        //                 -Dsonar.host.url=http://172.17.0.2:9000 \
-        //                 -Dsonar.login=sqp_b9bc874205ffe2208f2845a245a855521e2b5878"
-        //         }
-        //     }
-        // }
-       
         
         stage('Build Docker Image') {
             steps {
                 script {
                     sh "docker build -t ${env.DOCKER_IMAGE} -f Dockerfile --build-arg JAR_FILE=target/${JAR_FILE} ."
-                    
-                }
+                    }
             }
         }
         stage('Login to ACR') {
@@ -111,13 +87,54 @@ pipeline {
             }
         }
 
-        // stage('Scanning Docker Image') {
-        //     steps {
-        //         script {
-        //             def dockerImage = "${env.DOCKER_IMAGE}"
-        //             sh "trivy image --timeout 40m --scanners vuln ${dockerImage}"
-        //         }
-        //     }
-        // }
+        stage('Scanning Docker Image') {
+            steps {
+                script {
+                    def dockerImage = "${env.DOCKER_IMAGE}"
+                    sh "trivy image --timeout 40m --scanners vuln ${dockerImage}"
+                }
+            }
+        }
     }  
 }
+
+
+// stage('SonarQube Analysis') {
+//             steps {
+//               withSonarQubeEnv('SonarQubeServer') { 
+//                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+//                     sh """
+//                         ${SONARQUBE_SCANNER}/bin/sonar-scanner \
+//                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+//                         -Dsonar.sources=. \
+//                         -Dsonar.host.url=${SONARQUBE_URL} \
+//                         -Dsonar.login=${SONAR_TOKEN}
+//                     """
+//                 }
+//             }
+//         }
+//      }
+//         stage('Quality Gate') {
+//             steps {
+//               withSonarQubeEnv('SonarQubeServer') {
+//                 sleep time: 30000, unit: 'MILLISECONDS'
+//                 timeout(time: 30, unit: 'MINUTES') {
+//                     script {
+//                         def qg = waitForQualityGate()
+//                         if (qg.status != 'SUCCESS') {
+//                            error "Pipeline failed due to quality gate failure: ${qg.status}"
+//                            }
+//                            }
+//                            }
+//                 }
+//             }
+//         }
+
+// stage('Scanning Docker Image') {
+//             steps {
+//                 script {
+//                     def dockerImage = "${env.DOCKER_IMAGE}"
+//                     sh "trivy image --timeout 40m --scanners vuln ${dockerImage}"
+//                 }
+//             }
+//         }
