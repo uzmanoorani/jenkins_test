@@ -2,7 +2,7 @@ name: Configuration test
 on:
   repository_dispatch:
     types:
-      - configuration-check
+      - configuration-test
   workflow_dispatch:
 jobs:
   check:
