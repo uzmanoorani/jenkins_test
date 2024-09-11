@@ -1,9 +1,9 @@
 name: Configuration Check
 on:
-  workflow_dispatch:
   repository_dispatch:
     types:
       - configuration-check
+  workflow_dispatch:
 jobs:
   check:
     name: Run check
