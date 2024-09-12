@@ -1,9 +1,16 @@
 name: Configuration Check
 on:
-  repository_dispatch:
-    types:
-      - configuration-check
   workflow_dispatch:
+    inputs:
+      ENV:
+        description: 'Deployment Environment'
+        default: 'dev'
+        type: choice
+        required: true
+        options:
+          - dev
+          - stage
+          - prod
 jobs:
   check:
     name: Run check
