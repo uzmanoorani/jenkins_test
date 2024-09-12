@@ -5,12 +5,12 @@ on:
       ENV:
         description: 'Deployment Environment'
         default: 'dev'
-        type: choice
-        required: true
-        options:
-          - dev
-          - stage
-          - prod
+        # type: choice
+        # required: true
+        # options:
+        #   - dev
+        #   - stage
+        #   - prod
 jobs:
   check:
     name: Run check
