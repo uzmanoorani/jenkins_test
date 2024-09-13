@@ -18,9 +18,12 @@ jobs:
     steps:
       - name: Say hello
         run: echo Hello
+
   test:
-    name: Run check
+    name: Run test
     runs-on: ubuntu-latest
     steps:
-    - name: Hi
-      run: echo hi
+      - name: Hi
+        run: echo hi
+      - name: Fail the job
+        run: exit 1  # This step will make the job fail
