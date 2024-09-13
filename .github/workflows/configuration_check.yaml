@@ -18,3 +18,9 @@ jobs:
     steps:
       - name: Say hello
         run: echo Hello
+  test:
+    name: Run check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Hi
+      run: echo hi
