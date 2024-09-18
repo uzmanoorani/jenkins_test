@@ -41,4 +41,6 @@ jobs:
     steps:
       - name: Say hello
         run: echo Hello
+      - name: Sleep for 10 seconds
+        run: sleep 10
   
