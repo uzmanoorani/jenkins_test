@@ -16,17 +16,37 @@ jobs:
     name: Run check
     runs-on: ubuntu-latest
     steps:
+      - name: Notify Slack (job started)
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `check` started"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Say hello
         run: echo Hello
+
+      - name: Notify Slack (job completed with status)
+        if: always() # Ensures this runs even if the job fails
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `check` completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
 
   test:
     name: Run test
     runs-on: ubuntu-latest
     steps:
+      - name: Notify Slack (job started)
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `test` started"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Hi
         run: echo hi
+
       - name: Fail the job
-        run: exit 1  # This step will make the job fail
+        run: exit 1
+
+      - name: Notify Slack (job completed with status)
+        if: always() # Ensures this runs even if the job fails
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `test` completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
   test2:
     name: Run test2
     runs-on: ubuntu-latest
