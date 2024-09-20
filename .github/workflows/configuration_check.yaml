@@ -22,6 +22,8 @@ jobs:
 
       - name: Say hello
         run: echo Hello
+      - name: Fail the job
+        run: exit 1
 
       - name: Notify Slack (job completed with status)
         if: always() # Ensures this runs even if the job fails
@@ -40,7 +42,7 @@ jobs:
         run: echo hi
 
       - name: Fail the job
-        run: exit 1
+        run: exit 0
 
       - name: Notify Slack (job completed with status)
         if: always() # Ensures this runs even if the job fails
