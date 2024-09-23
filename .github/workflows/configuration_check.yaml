@@ -16,7 +16,7 @@ jobs:
     name: Run check
     runs-on: ubuntu-latest
     steps:
-      - name: Run script.sh
+      - name: Run script
         run: bash script.sh "${{ github.job }}"
         #run: bash ./script.sh "${{ github.job }}"
 
