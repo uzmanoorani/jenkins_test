@@ -16,8 +16,9 @@ jobs:
     name: Run check
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Slack (job started)
-        run: bash ./script/script.sh "${{ github.job }}"
+      - name: Run script.sh
+        run: ./script/script.sh "${{ github.job }}"
+        #run: bash ./script/script.sh "${{ github.job }}"
 
       - name: Say hello
         run: echo Hello
