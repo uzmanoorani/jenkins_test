@@ -17,13 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run script.sh
-        run: bash ./script.sh "${{ github.job }}"
+        run: bash script.sh "${{ github.job }}"
         #run: bash ./script.sh "${{ github.job }}"
 
       - name: Say hello
         run: echo Hello
-      - name: Fail the job
-        run: exit 1
+      # - name: Fail the job
+      #   run: exit 1
 
       # - name: Notify Slack (job completed with status)
       #   if: always() # Ensures this runs even if the job fails
