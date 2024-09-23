@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run script.sh
-        run: bash ./script/script.sh "${{ github.job }}"
-        #run: bash ./script/script.sh "${{ github.job }}"
+        run: bash ./script.sh "${{ github.job }}"
+        #run: bash ./script.sh "${{ github.job }}"
 
       - name: Say hello
         run: echo Hello
