@@ -5,20 +5,13 @@ on:
       ENV:
         description: 'Deployment Environment'
         default: 'dev'
-        # type: choice
-        # required: true
-        # options:
-        #   - dev
-        #   - stage
-        #   - prod
 jobs:
   check:
     name: Run check
     runs-on: ubuntu-latest
     steps:
       - name: Run script
-        run: bash script.sh "${{ github.job }}"
-        #run: bash ./script.sh "${{ github.job }}"
+        run: bash script.sh
 
       - name: Say hello
         run: echo Hello
