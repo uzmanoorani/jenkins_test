@@ -1,6 +1,7 @@
 #!/bin/bash
 JOB_NAME=$1
 MESSAGE="Job \`${JOB_NAME}\` started"
+echo "${message}"
 # Accept the Slack Webhook URL as the first parameter
 #SLACK_WEBHOOK_URL=$1
 
