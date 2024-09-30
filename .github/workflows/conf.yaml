@@ -18,3 +18,7 @@ jobs:
     steps:
       - name: Say hello
         run: echo Hello
+      - name: Run script
+        run: bash ./src/script/script.sh
+        env:
+          secret: ${{ secrets.SLACK_WEBHOOK_URL }}
