@@ -15,9 +15,10 @@ jobs:
 
       - name: Run script
         run: bash ./src/script/script.sh \
-         ${{ secrets.SLACK_WEBHOOK_URL }} \
          ${{ github.workflow }} \
          "has ${{ job.status }}. Complete Workflow Status: ${{ conclusion() }}"
+        env:
+          secret: ${{ secrets.SLACK_WEBHOOK_URL }}
 
         #"${{ secrets.SLACK_WEBHOOK_URL }}"
 
