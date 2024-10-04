@@ -5,10 +5,22 @@ on:
       ENV:
         description: 'Deployment Environment'
         default: 'dev'
+        type: choice
+        required: true
+        options:
+          - dev
+          - devops
 jobs:
   check:
     name: Run check
     runs-on: ubuntu-latest
+    env:
+      ENV_BRANCH: >-
+        ${{ fromJson('{
+          "dev": "main",
+          "devops": "main",
+          "prod": "main"
+        }')[github.event.inputs.ENV] }}    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,7 +35,7 @@ jobs:
         #"${{ secrets.SLACK_WEBHOOK_URL }}"
 
       - name: Say hello
-        run: echo Hello
+        run: echo "the branch is $ENV_BRANCH"
       # - name: Fail the job
       #   run: exit 1
 
