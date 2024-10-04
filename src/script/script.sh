@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "The secret is: $secret"
 SLACK_WEBHOOK_URL=$1
 echo "The secret is: $SLACK_WEBHOOK_URL"
 JOB_NAME=$2
