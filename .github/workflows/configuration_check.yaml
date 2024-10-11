@@ -36,6 +36,7 @@ jobs:
 
       - name: Say hello
         run: echo "the branch is $ENV_BRANCH and the environment is '${{ github.event.inputs.ENV }}'"
+        # run: echo "the branch is $ENV_BRANCH and the environment is '${{ github.event.inputs.ENV }}'"
       # - name: Fail the job
       #   run: exit 1
 

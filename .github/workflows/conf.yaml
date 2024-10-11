@@ -1,24 +1,101 @@
-name: Configuration test
+name: Configuration Check
 on:
   workflow_dispatch:
     inputs:
       ENV:
         description: 'Deployment Environment'
         default: 'dev'
-        # type: choice
-        # required: true
-        # options:
-        #   - dev
-        #   - stage
-        #   - prod
+        type: choice
+        required: true
+        options:
+          - dev
+          - devops
 jobs:
   check:
     name: Run check
     runs-on: ubuntu-latest
+    env:
+      ENV_BRANCH: >-
+        ${{ fromJson('{
+          "dev": "main",
+          "devops": "main",
+          "prod": "main"
+        }')[github.event.inputs.ENV] }}    
     steps:
-      - name: Say hello
-        run: echo Hello
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Run script
         run: bash ./src/script/script.sh
-        env:
-          secret: ${{ secrets.SLACK_WEBHOOK_URL }}
+         ${{ secrets.SLACK_WEBHOOK_URL }} \
+         ${{ github.workflow }} \
+         "complete"
+         #"has ${{ job.status }}. Complete Workflow Status: ${{ conclusion() }}"
+
+        #"${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Say hello
+        run: echo "the branch is $ENV_BRANCH and the environment is '${{ github.event.inputs.ENV }}'"
+        # run: echo "the branch is $ENV_BRANCH and the environment is '${{ github.event.inputs.ENV }}'"
+      # - name: Fail the job
+      #   run: exit 1
+
+      # - name: Notify Slack (job completed with status)
+      #   if: always() # Ensures this runs even if the job fails
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `${{ github.job }}` completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # test:
+  #   name: Run test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Notify Slack (job started)
+  #       run: |
+  #         curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `${{ github.job }}` started"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  #     - name: Hi
+  #       run: echo hi
+
+  #     - name: Fail the job
+  #       run: exit 0
+
+  #     - name: Notify Slack (job completed with status)
+  #       if: always() # Ensures this runs even if the job fails
+  #       run: |
+  #         curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `${{ github.job }}` completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # test2:
+  #   name: Run test2
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Notify Slack (job started)
+  #       run: |
+  #         curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `${{ github.job }}` started"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+  #     - name: Say hello
+  #       run: echo Hello
+  #     - name: Sleep for 10 seconds
+  #       run: sleep 30
+  #     - name: Fail the job
+  #       run: exit 1
+  #     - name: Notify Slack (job completed with status)
+  #       if: always()
+  #       run: |
+  #         curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `${{ github.job }}` completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+  # test3:
+  #   name: Run test3
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Notify Slack (job started)
+  #       run: |
+  #         curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `${{ github.job }}` started"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+  #     - name: Say hello
+  #       run: echo Hello
+  #     - name: Sleep for 10 seconds
+  #       run: sleep 10
+  #     - name: Fail the job
+  #       run: exit 1
+  #     - name: Notify Slack (job completed with status)
+  #       if: always() # Ensures this runs even if the job fails
+  #       run: |
+  #         curl -X POST -H 'Content-type: application/json' --data '{"text":"Job `${{ github.job }}` completed with status: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+  
