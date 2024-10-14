@@ -10,6 +10,14 @@ on:
         options:
           - dev
           - devops
+      NOTIFY_SLACK:
+        description: 'Slack Notification'
+        default: '1'
+        type: choice
+        required: true
+        options:
+          - 1
+          - 0
 jobs:
   check:
     name: Run check
@@ -21,6 +29,7 @@ jobs:
           "devops": "main",
           "prod": "main"
         }')[github.event.inputs.ENV] }}    
+      NOTIFY_SLACK: ${{ github.event.inputs.NOTIFY_SLACK }} 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -28,6 +37,7 @@ jobs:
       - name: Run script
         run: bash ./src/script/script.sh
          ${{ secrets.SLACK_WEBHOOK_URL }} \
+         ${{ env.NOTIFY_SLACK }} \
          ${{ github.workflow }} \
          "complete"
          #"has ${{ job.status }}. Complete Workflow Status: ${{ conclusion() }}"
