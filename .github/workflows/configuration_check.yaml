@@ -26,6 +26,7 @@ jobs:
           "devops": "main",
           "prod": "main"
         }')[github.event.inputs.ENV] }}    
+      NOTIFY_SLACK: ${{ github.event.inputs.notify_slack }} 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,7 +35,8 @@ jobs:
         run: bash ./src/script/script.sh
          ${{ secrets.SLACK_WEBHOOK_URL }} \
          ${{ github.workflow }} \
-         "complete"
+         "complete" \
+         ${{ env.NOTIFY_SLACK }}
          #"has ${{ job.status }}. Complete Workflow Status: ${{ conclusion() }}"
 
         #"${{ secrets.SLACK_WEBHOOK_URL }}"
