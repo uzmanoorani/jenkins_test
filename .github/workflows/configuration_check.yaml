@@ -13,7 +13,6 @@ on:
       notify_slack:
         description: 'Slack Notification'
         default: '1'
-        type: choice
         required: true
 
 jobs:
