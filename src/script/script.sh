@@ -1,9 +1,9 @@
 #!/bin/bash
 SLACK_WEBHOOK_URL=$1
 echo "The secret is: $SLACK_WEBHOOK_URL"
-JOB_NAME=$2
-CUSTOM_MESSAGE=$3
-Notify_slack=$4
+JOB_NAME=$3
+CUSTOM_MESSAGE=$4
+Notify_slack=$2
 echo "Notify_slack: $Notify_slack"
 MESSAGE="Job \`${JOB_NAME}\`: ${CUSTOM_MESSAGE}"
 if [ "$Notify_slack" -eq 1 ]; then
