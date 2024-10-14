@@ -10,6 +10,12 @@ on:
         options:
           - dev
           - devops
+      ENV:
+        description: 'Slack Notification'
+        default: '1'
+        type: choice
+        required: true
+
 jobs:
   check:
     name: Run check
