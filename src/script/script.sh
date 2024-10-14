@@ -4,6 +4,7 @@ echo "The secret is: $SLACK_WEBHOOK_URL"
 JOB_NAME=$2
 CUSTOM_MESSAGE=$3
 Notify_slack=$4
+echo "Notify_slack: $Notify_slack"
 MESSAGE="Job \`${JOB_NAME}\`: ${CUSTOM_MESSAGE}"
 if [ "$Notify_slack" -eq 1 ]; then
   echo "Sending Slack notification..."
