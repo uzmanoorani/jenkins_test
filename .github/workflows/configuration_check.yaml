@@ -13,8 +13,11 @@ on:
       NOTIFY_SLACK:
         description: 'Slack Notification'
         default: '1'
-        type: string
+        type: choice
         required: true
+        options:
+          - 1
+          - 0
 
 jobs:
   check:
