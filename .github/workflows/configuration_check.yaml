@@ -12,12 +12,12 @@ on:
           - devops
       NOTIFY_SLACK:
         description: 'Slack Notification'
-        default: '1'
+        default: 'yes'
         type: choice
         required: true
         options:
-          - 1
-          - 0
+          - yes
+          - no
 
 jobs:
   check:
