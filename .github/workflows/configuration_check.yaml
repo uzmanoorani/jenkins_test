@@ -10,7 +10,7 @@ on:
         options:
           - dev
           - devops
-      ENV:
+      notify_slack:
         description: 'Slack Notification'
         default: '1'
         type: choice
