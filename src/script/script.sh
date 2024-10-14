@@ -6,7 +6,7 @@ CUSTOM_MESSAGE=$4
 Notify_slack=$2
 echo "Notify_slack: $Notify_slack"
 MESSAGE="Job \`${JOB_NAME}\`: ${CUSTOM_MESSAGE}"
-if [ "$Notify_slack" -eq 'yes' ]; then
+if [ "$Notify_slack" -eq 'true' ]; then
   echo "Sending Slack notification..."
   curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${MESSAGE}\"}" $SLACK_WEBHOOK_URL
 else
