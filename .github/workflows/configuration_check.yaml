@@ -10,7 +10,7 @@ on:
         options:
           - dev
           - devops
-      notify_slack:
+      NOTIFY_SLACK:
         description: 'Slack Notification'
         default: 1
         required: true
@@ -26,7 +26,7 @@ jobs:
           "devops": "main",
           "prod": "main"
         }')[github.event.inputs.ENV] }}    
-      NOTIFY_SLACK: ${{ github.event.inputs.notify_slack }} 
+      NOTIFY_SLACK: ${{ github.event.inputs.NOTIFY_SLACK }} 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
