@@ -12,7 +12,7 @@ on:
           - devops
       notify_slack:
         description: 'Slack Notification'
-        default: '1'
+        default: 1
         required: true
 
 jobs:
