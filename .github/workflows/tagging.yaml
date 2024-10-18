@@ -20,14 +20,9 @@ jobs:
     - name: Get latest tag
       id: get_latest_tag
       run: |
-        # Get the latest tag that matches the pattern v*
-        latest_tag=$(git describe --tags --abbrev=0 --match "v*")
+        # Get the latest tag, or start from v0.0 if no tag exists
+        latest_tag=$(git describe --tags --abbrev=0 --match "v*" 2>/dev/null || echo "v0.0")
         echo "Latest tag: $latest_tag"
-        
-        # If no tag exists, set default to v0.0
-        if [ -z "$latest_tag" ]; then
-          latest_tag="v0.0"
-        fi
         echo "latest-tag=$latest_tag" >> $GITHUB_ENV
 
     - name: Increment version number
@@ -40,26 +35,8 @@ jobs:
         # Split the version number into major.minor
         IFS='.' read -r major minor <<< "$version"
         
-        # Increment the minor version
-        minor=$((minor+1))
+        # Increment
 
-        # Form the new tag
-        new_tag="v$major.$minor"
-        echo "New tag: $new_tag"
-        echo "new-tag=$new_tag" >> $GITHUB_ENV
-
-    - name: Tag the commit
-      run: |
-        # Configure Git user details for tagging
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
-
-        # Create and push the new tag
-        git tag ${{ env.new-tag }}
-        git push origin ${{ env.new-tag }}
-
-    - name: Output new tag
-      run: echo "Created new tag ${{ env.new-tag }}"
 
     # - name: Set up Git
     #   run: |
