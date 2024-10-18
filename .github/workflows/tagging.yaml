@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main  # Change to your target branch
-      
+
 permissions:
   contents: write
 jobs:
@@ -15,23 +15,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Git
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
+    # - name: Set up Git
+    #   run: |
+    #     git config user.name "GitHub Actions"
+    #     git config user.email "actions@github.com"
 
-    - name: Set tag version
-      env:
-        TAG_VERSION: 'v0.0.1'  # Set your desired tag version here
-      run: |
-        echo "Tag version: $TAG_VERSION"
-        git tag $TAG_VERSION
+    # - name: Set tag version
+    #   env:
+    #     TAG_VERSION: 'v0.0.1'  # Set your desired tag version here
+    #   run: |
+    #     echo "Tag version: $TAG_VERSION"
+    #     git tag $TAG_VERSION
 
-    - name: Push tag
-      env:
-        TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
-      run: |
-        git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} $TAG_VERSION
+    # - name: Push tag
+    #   env:
+    #     TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
+    #   run: |
+    #     git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} $TAG_VERSION
 
 # name: Versioning on Push
 
