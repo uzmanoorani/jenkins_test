@@ -3,7 +3,7 @@ name: Increment Tag Version on Push
 on:
   push:
     branches:
-      - main  # Or specify any branch you want to trigger this action on
+      - main  # Or specify the branch you want to trigger this action on
 
 permissions:
   contents: write  # Allows the workflow to create and push tags
@@ -22,9 +22,14 @@ jobs:
     - name: Get latest tag
       id: get_latest_tag
       run: |
-        # Get the latest tag, or start from v0.0 if no tag exists
-        latest_tag=$(git describe --tags --abbrev=0 --match "v*" 2>/dev/null || echo "v0.0")
+        # Get the latest tag that matches 'v*', or default to v0.0 if no tag exists
+        latest_tag=$(git tag --sort=-v:refname | grep -E "^v[0-9]+\.[0-9]+$" | head -n 1)
         echo "Latest tag: $latest_tag"
+
+        # If no tags exist, start from v0.0
+        if [ -z "$latest_tag" ]; then
+          latest_tag="v0.0"
+        fi
         echo "latest-tag=$latest_tag" >> $GITHUB_ENV
 
     - name: Increment version number
@@ -45,7 +50,17 @@ jobs:
         echo "New tag: $new_tag"
         echo "new-tag=$new_tag" >> $GITHUB_ENV
 
+    - name: Check if tag already exists
+      id: check_tag_exists
+      run: |
+        # Check if the tag already exists
+        if git rev-parse ${{ env.new-tag }} >/dev/null 2>&1; then
+          echo "Tag ${{ env.new-tag }} already exists!"
+          exit 1
+        fi
+
     - name: Tag the commit
+      if: success()  # Proceed only if the previous step succeeds
       run: |
         # Configure Git user details for tagging
         git config --global user.name "github-actions"
