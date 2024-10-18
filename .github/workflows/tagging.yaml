@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main  # Change to your target branch
-
+permissions:
+  contents: write
 jobs:
   versioning:
     runs-on: ubuntu-latest
