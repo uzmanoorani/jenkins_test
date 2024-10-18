@@ -37,7 +37,7 @@ jobs:
 
     - name: Create new tag
       env:
-        TOKEN: ${{ secrets.TOKEN }}  # Use your PAT stored in GitHub Secrets
+        TOKEN: ${{ secrets.TOKEN }}  # Use your PAT stored in GitHub Secretshsjdhjsh
       run: |
         git tag ${{ env.new_version }}
         git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} ${{ env.new_version }}
