@@ -3,9 +3,11 @@ name: Increment Tag Version on Push
 on:
   push:
     branches:
-      - main  # Or specify any branch where you want to trigger this action
+      - main  # Or specify any branch you want to trigger this action on
+
 permissions:
-  contents: write
+  contents: write  # Allows the workflow to create and push tags
+
 jobs:
   increment-tag:
     runs-on: ubuntu-latest
@@ -35,7 +37,27 @@ jobs:
         # Split the version number into major.minor
         IFS='.' read -r major minor <<< "$version"
         
-        # Increment
+        # Increment the minor version
+        minor=$((minor+1))
+
+        # Form the new tag
+        new_tag="v$major.$minor"
+        echo "New tag: $new_tag"
+        echo "new-tag=$new_tag" >> $GITHUB_ENV
+
+    - name: Tag the commit
+      run: |
+        # Configure Git user details for tagging
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+
+        # Create and push the new tag
+        git tag ${{ env.new-tag }}
+        git push origin ${{ env.new-tag }}
+
+    - name: Output new tag
+      run: echo "Created new tag ${{ env.new-tag }}"
+
 
 
     # - name: Set up Git
