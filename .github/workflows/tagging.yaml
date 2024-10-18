@@ -6,7 +6,6 @@ on:
       - main  # Change to your target branch
 permissions:
   contents: write
-
 jobs:
   versioning:
     runs-on: ubuntu-latest
@@ -37,19 +36,21 @@ jobs:
 
     - name: Create new tag
       env:
-        TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
+        GITHUB_TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
       run: |
-        git tag ${{ env.new_version }}
-        git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} ${{ env.new_version }}
+        # Generate a unique tag by adding a timestamp
+        unique_tag="${{ env.new_version }}-$(date +'%Y%m%d%H%M%S')"
+        git tag $unique_tag
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $unique_tag
 
     - name: Commit version bump (optional)
       env:
-        TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
+        GITHUB_TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
       run: |
-        echo "Version: ${{ env.new_version }}" > VERSION.txt  # Create a VERSION.txt file
+        echo "Version: $unique_tag" > VERSION.txt  # Create a VERSION.txt file
         git add VERSION.txt
-        git commit -m "Update version to ${{ env.new_version }}"
-        git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} main  # Push the changes to the main branch
+        git commit -m "Update version to $unique_tag"
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} main  # Push the changes to the main branch
 
 
 
