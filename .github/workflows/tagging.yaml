@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  # Change to your target branch
+      
 permissions:
   contents: write
 jobs:
@@ -32,25 +33,77 @@ jobs:
         # Increment the patch version
         new_version="v${major}.${minor}.$((patch + 1))"
         echo "New version is: $new_version"
+        
+        # Check if the new tag already exists
+        while git rev-parse "$new_version" >/dev/null 2>&1; do
+          # Increment the patch version again if it exists
+          new_version="v${major}.${minor}.$((patch + 1))"
+          patch=$((patch + 1))
+          echo "Incremented to new version: $new_version"
+        done
+
         echo "new_version=$new_version" >> $GITHUB_ENV
 
     - name: Create new tag
       env:
-        GITHUB_TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
+        TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
       run: |
-        # Generate a unique tag by adding a timestamp
-        unique_tag="${{ env.new_version }}-$(date +'%Y%m%d%H%M%S')"
-        git tag $unique_tag
-        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $unique_tag
+        git tag ${{ env.new_version }}
+        git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} ${{ env.new_version }}
 
     - name: Commit version bump (optional)
       env:
-        GITHUB_TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
+        TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
       run: |
-        echo "Version: $unique_tag" > VERSION.txt  # Create a VERSION.txt file
+        echo "Version: ${{ env.new_version }}" > VERSION.txt  # Create a VERSION.txt file
         git add VERSION.txt
-        git commit -m "Update version to $unique_tag"
-        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} main  # Push the changes to the main branch
+        git commit -m "Update version to ${{ env.new_version }}"
+        git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} main  # Push the changes to the main branch
+
+# name: Versioning on Push
+
+# on:
+#   push:
+#     branches:
+#       - main  # Change to your target branch
+# permissions:
+#   contents: write
+# jobs:
+#   versioning:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+
+#     - name: Set up Git
+#       run: |
+#         git config user.name "GitHub Actions"
+#         git config user.email "actions@github.com"
+
+#     - name: Get current version
+#       id: get_version
+#       run: |
+#         # Get the latest tag or start from v0.0.0
+#         current_version=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+#         echo "Current version is: $current_version"
+
+#         # Extract the version numbers
+#         IFS='.' read -r major minor patch <<< "${current_version#v}"  # Remove leading 'v'
+        
+#         # Increment the patch version
+#         new_version="v${major}.${minor}.$((patch + 1))"
+#         echo "New version is: $new_version"
+#         echo "new_version=$new_version" >> $GITHUB_ENV
+
+#     - name: Create new tag
+#       env:
+#         TOKEN: ${{ secrets.YOUR_PAT_SECRET_NAME }}  # Use your PAT secret
+#       run: |
+#         # Generate a unique tag by adding a timestamp
+#         unique_tag="${{ env.new_version }}-$(date +'%Y%m%d%H%M%S')"
+#         git tag $unique_tag
+#         git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} $unique_tag
 
 
 
