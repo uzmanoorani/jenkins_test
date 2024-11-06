@@ -3,7 +3,7 @@ name: Update CloudFormation Stack Based on File Changes
 on:
   push:
     branches:
-      - dev  # Adjust this to your target branch
+      - main  # Adjust this to your target branch
     paths:
       - '*.yaml'  # Triggers on any root YAML file change
 
