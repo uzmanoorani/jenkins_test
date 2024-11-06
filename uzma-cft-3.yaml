@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Sample CloudFormation Template with a placeholder resource to meet requirements.
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - production
+    Description: The environment where the stack will be deployed (dev, staging, production).
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Environment Configuration"
+        Parameters:
+          - Environment
+
+Resources:
+  PlaceholderBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub "placeholder-bucket-3-${Environment}-${AWS::Region}"
+
+Outputs:
+  PlaceholderBucketName:
+    Description: "Name of the placeholder bucket"
+    Value: !Ref PlaceholderBucket
