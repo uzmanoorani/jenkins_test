@@ -43,9 +43,9 @@ jobs:
           declare -A file_role_map
           declare -A file_stack_map
 
-          file_role_map["uzma-cft-1.yaml"]="arn:aws:iam::059516066038:role/scaleops-dev-github-oidc-infra-role"
-          file_role_map["uzma-cft-2.yaml"]="arn:aws:iam::059516066038:role/scaleops-dev-github-oidc-infra-role"
-          file_role_map["uzma-cft-3.yaml"]="arn:aws:iam::059516066038:role/scaleops-dev-github-oidc-infra-role"
+          file_role_map["uzma-cft-1.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
+          file_role_map["uzma-cft-2.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
+          file_role_map["uzma-cft-3.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
 
           file_stack_map["uzma-cft-1.yaml"]="uzma-cft-1"
           file_stack_map["uzma-cft-2.yaml"]="uzma-cft-2"
