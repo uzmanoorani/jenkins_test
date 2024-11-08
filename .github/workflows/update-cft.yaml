@@ -67,7 +67,6 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
-         # role-session-name: GitHubActionsOIDCSession
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy or Update Stack in AWS

@@ -26,13 +26,13 @@ Resources:
     DeletionPolicy: Retain
     Properties:
       BucketName: !Sub "placeholder-bucket-${Environment}-${AWS::Region}"
-  # PlaceholderBucket2:
-  #   Type: AWS::S3::Bucket
-  #   DeletionPolicy: Retain
-  #   Properties:
-  #     BucketName: !Sub "second-placeholder-bucket-${Environment}-${AWS::Region}"
+  PlaceholderBucket2:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub "second-placeholder-bucket-${Environment}-${AWS::Region}"
 
-Outputs:
+
   PlaceholderBucketName:
     Description: "Name of the placeholder bucket"
     Value: !Ref PlaceholderBucket
