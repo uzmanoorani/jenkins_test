@@ -36,16 +36,18 @@ jobs:
         run: |
           if [[ "$FILES_CHANGED" == *"uzma-cft-1.yaml"* ]]; then
             echo "AWS_ROLE_ARN=${{ env.DEV_ROLE }}" >> $GITHUB_ENV
-            echo "STACK_NAME=my-dev-stack" >> $GITHUB_ENV
-            echo "TEMPLATE_FILE=dev.yaml" >> $GITHUB_ENV
+            echo "STACK_NAME=uzma-cft-1" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=uzma-cft-1.yaml" >> $GITHUB_ENV
+
           elif [[ "$FILES_CHANGED" == *"uzma-cft-2.yaml"* ]]; then
             echo "AWS_ROLE_ARN=${{ env.STAGING_ROLE }}" >> $GITHUB_ENV
-            echo "STACK_NAME=my-staging-stack" >> $GITHUB_ENV
-            echo "TEMPLATE_FILE=staging.yaml" >> $GITHUB_ENV
+            echo "STACK_NAME=uzma-cft-2" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=uzma-cft-2.yaml" >> $GITHUB_ENV
+
           elif [[ "$FILES_CHANGED" == *"uzma-cft-3.yaml"* ]]; then
             echo "AWS_ROLE_ARN=${{ env.PROD_ROLE }}" >> $GITHUB_ENV
-            echo "STACK_NAME=my-prod-stack" >> $GITHUB_ENV
-            echo "TEMPLATE_FILE=prod.yaml" >> $GITHUB_ENV
+            echo "STACK_NAME=uzma-cft-3" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=uzma-cft-3.yaml" >> $GITHUB_ENV
           else
             echo "No relevant changes found."
             exit 0
