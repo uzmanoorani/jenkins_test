@@ -9,6 +9,7 @@ env:
   DEV_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
   STAGING_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
   PROD_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
+  AWS_REGION: us-east-1
 
 jobs:
   deploy:
@@ -65,8 +66,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
-          role-session-name: GitHubActionsOIDCSession
-          aws-region: us-west-2
+         # role-session-name: GitHubActionsOIDCSession
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy or Update Stack in AWS
         if: env.AWS_ROLE_ARN
@@ -75,7 +76,7 @@ jobs:
             --stack-name ${{ env.STACK_NAME }} \
             --template-file ${{ env.TEMPLATE_FILE }} \
             --capabilities CAPABILITY_NAMED_IAM \
-            --region us-west-2 \
+            --region ${{ env.AWS_REGION }} \
             --no-fail-on-empty-changeset
 
 # name: Deploy to AWS Based on File Changes
