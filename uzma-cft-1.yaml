@@ -10,7 +10,7 @@ Parameters:
       - dev
       - staging
       - production
-    Description: The environment where the stack will be deployed (dev, staging, production)      .
+    Description: The environment where the stack will be deployed (dev, staging, production).
 
 Metadata:
   AWS::CloudFormation::Interface:
