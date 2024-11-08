@@ -36,6 +36,11 @@ jobs:
           echo "Changed files:"
           cat changed_files.txt
 
+      - name: Retrieve OIDC Token
+        id: get_oidc_token
+        run: |
+          echo "::set-output name=token::$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL")"
+
       - name: Deploy CloudFormation Stacks Based on Changes
         if: success()
         run: |
@@ -59,7 +64,10 @@ jobs:
 
               echo "Configuring AWS credentials for role: $ROLE_ARN"
               aws configure set region $AWS_REGION
-              aws sts assume-role-with-web-identity --role-arn $ROLE_ARN --role-session-name GitHubActionsSession --web-identity-token ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_URL }} > /dev/null 2>&1
+              aws sts assume-role-with-web-identity \
+                --role-arn "$ROLE_ARN" \
+                --role-session-name "GitHubActionsSession" \
+                --web-identity-token "${{ steps.get_oidc_token.outputs.token }}" > /dev/null 2>&1
 
               echo "Updating CloudFormation stack $STACK_NAME with $file template..."
               aws cloudformation update-stack \
@@ -74,3 +82,81 @@ jobs:
               echo "No matching role found for $file. Skipping deployment."
             fi
           done < changed_files.txt
+
+
+# name: Update CloudFormation Stack Based on File Changes
+
+# on:
+#   push:
+#     branches:
+#       - main  # Adjust this to your target branch
+#     paths:
+#       - '*.yaml'  # Triggers on any root YAML file change
+
+# permissions:
+#   id-token: write
+#   contents: read
+
+# jobs:
+#   update-stacks:
+#     runs-on: ubuntu-latest
+#     env:
+#       AWS_REGION: us-east-1  # Set your AWS region
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 2
+
+#       - name: Find Changed Files
+#         id: find_changed_files
+#         run: |
+#           echo "Finding changed files..."
+#           if git rev-parse HEAD^ > /dev/null 2>&1; then
+#             git diff --name-only HEAD^ HEAD > changed_files.txt || true
+#           else
+#             echo "No previous commits to compare."
+#             touch changed_files.txt
+#           fi
+#           echo "Changed files:"
+#           cat changed_files.txt
+
+#       - name: Deploy CloudFormation Stacks Based on Changes
+#         if: success()
+#         run: |
+#           # Define mappings for files and their corresponding stack names and OIDC roles
+#           declare -A file_role_map
+#           declare -A file_stack_map
+
+#           file_role_map["uzma-cft-1.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
+#           file_role_map["uzma-cft-2.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
+#           file_role_map["uzma-cft-3.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
+
+#           file_stack_map["uzma-cft-1.yaml"]="uzma-cft-1"
+#           file_stack_map["uzma-cft-2.yaml"]="uzma-cft-2"
+#           file_stack_map["uzma-cft-3.yaml"]="uzma-cft-3"
+
+#           # Read the changed files and determine if they have a matching OIDC role
+#           while IFS= read -r file; do
+#             if [[ -n "${file_role_map[$file]}" ]]; then
+#               ROLE_ARN="${file_role_map[$file]}"
+#               STACK_NAME="${file_stack_map[$file]}"
+
+#               echo "Configuring AWS credentials for role: $ROLE_ARN"
+#               aws configure set region $AWS_REGION
+#               aws sts assume-role-with-web-identity --role-arn $ROLE_ARN --role-session-name GitHubActionsSession --web-identity-token ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_URL }} > /dev/null 2>&1
+
+#               echo "Updating CloudFormation stack $STACK_NAME with $file template..."
+#               aws cloudformation update-stack \
+#                 --stack-name "$STACK_NAME" \
+#                 --template-body "file://$file" \
+#                 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+              
+#               # Wait for stack update completion
+#               aws cloudformation wait stack-update-complete --stack-name "$STACK_NAME"
+#               echo "Update completed for $STACK_NAME."
+#             else
+#               echo "No matching role found for $file. Skipping deployment."
+#             fi
+#           done < changed_files.txt
