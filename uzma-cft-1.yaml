@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
-  Sample CloudFormation Template with a placeholder resource to meet requirements.
+  Sample CloudFormation Template with a placeholder resource to meet requirements  .
 
 Parameters:
   Environment:
