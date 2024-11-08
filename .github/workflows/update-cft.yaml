@@ -1,87 +1,73 @@
-name: Update CloudFormation Stack Based on File Changes
+name: Deploy to AWS Based on File Changes
 
 on:
   push:
     branches:
-      - main  # Adjust this to your target branch
-    paths:
-      - '*.yaml'  # Triggers on any root YAML file change
+      - main
 
-permissions:
-  id-token: write
-  contents: read
+env:
+  DEV_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
+  STAGING_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
+  PROD_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
 
 jobs:
-  update-stacks:
+  deploy:
     runs-on: ubuntu-latest
-    env:
-      AWS_REGION: us-east-1  # Set your AWS region
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 2
+          node-version: '16'
 
-      - name: Find Changed Files
-        id: find_changed_files
+      - name: Determine Changed Files
+        id: changed-files
         run: |
-          echo "Finding changed files..."
-          if git rev-parse HEAD^ > /dev/null 2>&1; then
-            git diff --name-only HEAD^ HEAD > changed_files.txt || true
+          echo "FILES_CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Set AWS Role, Stack Name, and Template File
+        id: aws-role-stack-template
+        run: |
+          if [[ "$FILES_CHANGED" == *"uzma-cft-1.yaml"* ]]; then
+            echo "AWS_ROLE_ARN=${{ env.DEV_ROLE }}" >> $GITHUB_ENV
+            echo "STACK_NAME=my-dev-stack" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=dev.yaml" >> $GITHUB_ENV
+          elif [[ "$FILES_CHANGED" == *"uzma-cft-2.yaml"* ]]; then
+            echo "AWS_ROLE_ARN=${{ env.STAGING_ROLE }}" >> $GITHUB_ENV
+            echo "STACK_NAME=my-staging-stack" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=staging.yaml" >> $GITHUB_ENV
+          elif [[ "$FILES_CHANGED" == *"uzma-cft-3.yaml"* ]]; then
+            echo "AWS_ROLE_ARN=${{ env.PROD_ROLE }}" >> $GITHUB_ENV
+            echo "STACK_NAME=my-prod-stack" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=prod.yaml" >> $GITHUB_ENV
           else
-            echo "No previous commits to compare."
-            touch changed_files.txt
-          fi
-          echo "Changed files:"
-          cat changed_files.txt
+            echo "No relevant changes found."
+            exit 0
 
-      - name: Retrieve OIDC Token
-        id: get_oidc_token
+      - name: Configure AWS credentials
+        if: env.AWS_ROLE_ARN
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-session-name: GitHubActionsOIDCSession
+          aws-region: us-west-2
+
+      - name: Deploy or Update Stack in AWS
+        if: env.AWS_ROLE_ARN
         run: |
-          echo "::set-output name=token::$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL")"
-
-      - name: Deploy CloudFormation Stacks Based on Changes
-        if: success()
-        run: |
-          # Define mappings for files and their corresponding stack names and OIDC roles
-          declare -A file_role_map
-          declare -A file_stack_map
-
-          file_role_map["uzma-cft-1.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
-          file_role_map["uzma-cft-2.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
-          file_role_map["uzma-cft-3.yaml"]="arn:aws:iam::059516066038:role/githubactions_oidc"
-
-          file_stack_map["uzma-cft-1.yaml"]="uzma-cft-1"
-          file_stack_map["uzma-cft-2.yaml"]="uzma-cft-2"
-          file_stack_map["uzma-cft-3.yaml"]="uzma-cft-3"
-
-          # Read the changed files and determine if they have a matching OIDC role
-          while IFS= read -r file; do
-            if [[ -n "${file_role_map[$file]}" ]]; then
-              ROLE_ARN="${file_role_map[$file]}"
-              STACK_NAME="${file_stack_map[$file]}"
-
-              echo "Configuring AWS credentials for role: $ROLE_ARN"
-              aws configure set region $AWS_REGION
-              aws sts assume-role-with-web-identity \
-                --role-arn "$ROLE_ARN" \
-                --role-session-name "GitHubActionsSession" \
-                --web-identity-token "${{ steps.get_oidc_token.outputs.token }}" > /dev/null 2>&1
-
-              echo "Updating CloudFormation stack $STACK_NAME with $file template..."
-              aws cloudformation update-stack \
-                --stack-name "$STACK_NAME" \
-                --template-body "file://$file" \
-                --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
-              
-              # Wait for stack update completion
-              aws cloudformation wait stack-update-complete --stack-name "$STACK_NAME"
-              echo "Update completed for $STACK_NAME."
-            else
-              echo "No matching role found for $file. Skipping deployment."
-            fi
-          done < changed_files.txt
+          # Deploy the CloudFormation stack with the dynamically set stack name and template file.
+          aws cloudformation deploy \
+            --stack-name ${{ env.STACK_NAME }} \
+            --template-file ${{ env.TEMPLATE_FILE }} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --region us-west-2 \
+            --no-fail-on-empty-changeset
 
 
 # name: Update CloudFormation Stack Based on File Changes
