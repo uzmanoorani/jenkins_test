@@ -49,6 +49,7 @@ jobs:
           else
             echo "No relevant changes found."
             exit 0
+          fi  # Closing fi for the if block
 
       - name: Configure AWS credentials
         if: env.AWS_ROLE_ARN
