@@ -39,7 +39,6 @@ jobs:
           
           cat changed_files.txt
           echo "FILES_CHANGED=$(<changed_files.txt)" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
 
       - name: Set AWS Role, Stack Name, and Template File
         id: aws-role-stack-template
