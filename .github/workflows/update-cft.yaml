@@ -31,6 +31,22 @@ jobs:
         run: |
           echo "FILES_CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
 
+      - name: Find changed files
+        working-directory: ${{ env.Templates_DIR }}
+        run: |
+          echo "Finding changed files..."
+          
+          # Check if there are previous commits
+          if git rev-parse HEAD^ > /dev/null 2>&1; then
+            git diff --name-only HEAD^ HEAD > changed_files.txt || true
+          else
+            echo "No previous commits to compare."
+            touch changed_files.txt # Create an empty file if no commits
+          fi
+          
+          cat changed_files.txt
+          echo "Changed files: $(<changed_files.txt)"
+
       - name: Set AWS Role, Stack Name, and Template File
         id: aws-role-stack-template
         run: |
