@@ -5,18 +5,18 @@ on:
     branches:
       - main
 
-env:
-  DEV_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
-  STAGING_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
-  PROD_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
-  AWS_REGION: us-east-1
-
+permissions:
+      id-token: write
+      contents: read
+      
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
+    env:
+      DEV_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
+      STAGING_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
+      PROD_ROLE: arn:aws:iam::059516066038:role/githubactions_oidc
+      AWS_REGION: us-east-1
 
     steps:
       - name: Checkout code
