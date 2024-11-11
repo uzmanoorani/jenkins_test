@@ -34,6 +34,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Say hello
+        run: |
+          echo Hello
+          sleep 15
+          
       - name: Run script
         run: bash ./src/script/script.sh
          ${{ secrets.SLACK_WEBHOOK_URL }} \
