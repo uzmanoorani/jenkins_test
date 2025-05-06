@@ -23,8 +23,13 @@ jobs:
         run: |
           echo "Hello World! PR Comment: ${{ github.event.comment.body }}"
 
+      - name: Remove slash and display OS name
+        run: |
+          os_name=$(echo "${{ github.event.comment.body }}" | tr -d '/')
+          echo "Processed OS name: $os_name"
+
       - name: Sleep
-        run: sleep 60
+        run: sleep 30
 
       - name: Add simple comment to PR
         uses: actions/github-script@v6
