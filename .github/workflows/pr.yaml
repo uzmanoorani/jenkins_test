@@ -1,20 +1,41 @@
-name: "Deploy on Comment"
+name: Hello World on PR Comment
 
+on:
+  issue_comment:
+    types: [created]
 
-on: 
-  pull_request:
-    types:
-      - opened
-      - synchronize
-    # branches: [main]
+permissions: 
+  pull-requests: write 
+  id-token: write
+  issues: write
+  contents: read 
 
 jobs:
-  deploy:
+  display-comment:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    # Only run for comments on pull requests
+    if: github.event.issue.pull_request
 
-      - name: Deploy
+    steps:
+      - name: Display Comment
         run: |
-          echo "Deploying..."
+          echo "Hello World! PR Comment: ${{ github.event.comment.body }}"
+
+# name: "Deploy on Comment"
+# on: 
+#   pull_request:
+#     types:
+#       - opened
+#       - synchronize
+#     # branches: [main]
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+
+#       - name: Deploy
+#         run: |
+#           echo "Deploying..."
