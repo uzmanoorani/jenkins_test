@@ -15,12 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     # Only run for comments on pull requests
     # if: github.event.issue.pull_request
-    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' }}
+    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' && startsWith(github.event.comment.body, '/run-tf') }}
+
 
     steps:
       - name: Display Comment
         run: |
           echo "Hello World! PR Comment: ${{ github.event.comment.body }}"
+
+      - name: Sleep
+        run: sleep 60
 
       - name: Add simple comment to PR
         uses: actions/github-script@v6
