@@ -14,7 +14,8 @@ jobs:
   display-comment:
     runs-on: ubuntu-latest
     # Only run for comments on pull requests
-    if: github.event.issue.pull_request
+    # if: github.event.issue.pull_request
+    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' }}
 
     steps:
       - name: Display Comment
