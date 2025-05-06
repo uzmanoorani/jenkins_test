@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run for comments on pull requests
     # if: github.event.issue.pull_request
-    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' && startsWith(github.event.comment.body, '/run-tf') }}
+    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' && startsWith(github.event.comment.body, 'AMI-') }}
 
 
     steps:
