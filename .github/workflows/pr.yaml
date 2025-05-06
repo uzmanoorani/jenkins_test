@@ -25,7 +25,7 @@ jobs:
 
       - name: Remove slash and display OS name
         run: |
-          os_name=$(echo "${{ github.event.comment.body }}" | tr -d '/')
+          os_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AMI-//')
           echo "Processed OS name: $os_name"
 
       - name: Sleep
