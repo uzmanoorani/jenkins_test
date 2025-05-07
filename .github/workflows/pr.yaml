@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run for comments on pull requests
     # if: github.event.issue.pull_request
-    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' && startsWith(github.event.comment.body, 'AMI-') }}
+    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' && startsWith(github.event.comment.body, 'AZ-') }}
 
 
     steps:
@@ -25,7 +25,7 @@ jobs:
 
       - name: Remove slash and display OS name
         run: |
-          os_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AMI-//')
+          os_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AZ-//')
           echo "Processed OS name: $os_name"
 
       - name: Sleep
