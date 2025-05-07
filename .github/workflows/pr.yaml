@@ -25,12 +25,34 @@ jobs:
 
       - name: Remove slash and display OS name
         run: |
-          os_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AZ-//')
-          echo "Image name: $os_name"
-          echo "IMAGE_NAME=$os_name" >> $GITHUB_ENV
+          image_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AZ-//')
+          echo "Image name: $image_name"
+          echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
+          case "$image_name" in
+          AKS)
+            image_version="aks-engine-ubuntu-2004-202301"
+            ;;
+          Ubuntu)
+            image_version="22_04-lts-gen2"
+            ;;
+          Debian)
+            image_version="10/11/12"
+            ;;
+          AlmaLinux)
+            image_version="9-gen2"
+            ;;
+          *)
+            echo "Unsupported OS: $image_name"
+            exit 1
+            ;;
+          esac
+
+          echo "VERSION=$image_version" >> $GITHUB_ENV
 
       - name: Image Name
-        run: echo "Image name is = $IMAGE_NAME"
+        run: |
+            echo "Image name is = $IMAGE_NAME"
+            echo "Image version is = $VERSION"
         
       - name: Sleep
         run: sleep 30
