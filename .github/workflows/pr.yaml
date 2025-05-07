@@ -26,7 +26,10 @@ jobs:
       - name: Remove slash and display OS name
         run: |
           os_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AZ-//')
-          echo "Processed OS name: $os_name"
+          echo "Image name: $os_name"
+          echo "IMAGE_NAME=$os_name" >> $GITHUB_ENV
+          echo "Image name is: $IMAGE_NAME"
+
 
       - name: Sleep
         run: sleep 30
