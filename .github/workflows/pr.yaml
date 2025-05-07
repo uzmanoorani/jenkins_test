@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "Hello World! PR Comment: ${{ github.event.comment.body }}"
 
-      - name: Remove slash and display OS name
+      - name: Set Image name and version a
         run: |
           image_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AZ-//')
           echo "Image name: $image_name"
@@ -31,15 +31,28 @@ jobs:
           case "$image_name" in
           AKS)
             image_version="aks-engine-ubuntu-2004-202301"
+            USERNAME="azureuser"
+            image_publisher="microsoft-aks"
+            IMAGE_OFFER="aks"
             ;;
           Ubuntu)
             image_version="22_04-lts-gen2"
+            USERNAME="azureuser"
+            image_publisher="Canonical"
+            IMAGE_OFFER="0001-com-ubuntu-server-jammy"
             ;;
           Debian)
-            image_version="10/11/12"
+            image_version="12"
+            USERNAME="azureuser"
+            IMAGE_OFFER="debian-12"
+            image_publisher="Debian"
+            image_sku="12"
             ;;
           Almalinux)
             image_version="9-gen2"
+            USERNAME="azureuser"
+            image_publisher="almalinux"
+            IMAGE_OFFER="almalinux-x86_64"
             ;;
           *)
             echo "Unsupported OS: $image_name"
@@ -48,11 +61,16 @@ jobs:
           esac
 
           echo "VERSION=$image_version" >> $GITHUB_ENV
+          echo "USERNAME=$USERNAME" >> $GITHUB_ENV
+          echo "image_publisher=$image_publisher" >> $GITHUB_ENV
+          echo "IMAGE_OFFER=$IMAGE_OFFER" >> $GITHUB_ENV
 
       - name: Image Name
         run: |
             echo "Image name is = $IMAGE_NAME"
             echo "Image version is = $VERSION"
+            echo "image_publisher=$image_publisher"
+            echo "IMAGE_OFFER=$IMAGE_OFFER"
         
       - name: Sleep
         run: sleep 30
