@@ -38,7 +38,7 @@ jobs:
           Debian)
             image_version="10/11/12"
             ;;
-          AlmaLinux)
+          Almalinux)
             image_version="9-gen2"
             ;;
           *)
