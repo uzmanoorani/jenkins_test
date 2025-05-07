@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run for comments on pull requests
     # if: github.event.issue.pull_request
-    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' && startsWith(github.event.comment.body, 'AZ-') }}
+    if: ${{ github.event.issue.pull_request && github.actor != 'github-actions[bot]' && startsWith(github.event.comment.body, 'RUN Azure') }}
 
 
     steps:
@@ -23,9 +23,9 @@ jobs:
         run: |
           echo "Hello World! PR Comment: ${{ github.event.comment.body }}"
 
-      - name: Set Image name and version a
+      - name: Get Source VM Image
         run: |
-          image_name=$(echo "${{ github.event.comment.body }}" | sed 's/^AZ-//')
+          image_name=$(echo "${{ github.event.comment.body }}" | sed 's/^RUN Azure //')
           echo "Image name: $image_name"
           echo "IMAGE_NAME=$image_name" >> $GITHUB_ENV
           case "$image_name" in
@@ -34,12 +34,14 @@ jobs:
             USERNAME="azureuser"
             image_publisher="microsoft-aks"
             IMAGE_OFFER="aks"
+            TF_FOLDER="templates/AKS"
             ;;
           Ubuntu)
             image_version="22_04-lts-gen2"
             USERNAME="azureuser"
             image_publisher="Canonical"
             IMAGE_OFFER="0001-com-ubuntu-server-jammy"
+            TF_FOLDER="templates/VM"
             ;;
           Debian)
             image_version="12"
@@ -47,12 +49,14 @@ jobs:
             IMAGE_OFFER="debian-12"
             image_publisher="Debian"
             image_sku="12"
+            TF_FOLDER="templates/VM"
             ;;
           Almalinux)
             image_version="9-gen2"
             USERNAME="azureuser"
             image_publisher="almalinux"
             IMAGE_OFFER="almalinux-x86_64"
+            TF_FOLDER="templates/VM"
             ;;
           *)
             echo "Unsupported OS: $image_name"
@@ -64,6 +68,7 @@ jobs:
           echo "USERNAME=$USERNAME" >> $GITHUB_ENV
           echo "image_publisher=$image_publisher" >> $GITHUB_ENV
           echo "IMAGE_OFFER=$IMAGE_OFFER" >> $GITHUB_ENV
+          echo "TF_FOLDER=$TF_FOLDER" >> $GITHUB_ENV
 
       - name: Image Name
         run: |
